@@ -1,10 +1,11 @@
 /**
- * @fileOverview Реализация апи нотификатора
+ * @fileOverview Webkit Notification API jQuery Wrapper
  *
  * @see http://www.chromium.org/developers/design-documents/desktop-notifications/api-specification
  * @see http://www.html5rocks.com/en/tutorials/notifications/quick/
  *
  * @author azproduction
+ * @licence MIT (c) azproduction 2011
  */
 jQuery.notification = (function ($, window) {
 
@@ -13,24 +14,22 @@ jQuery.notification = (function ($, window) {
  *
  * @constructor
  *
- * @param {Object}   options                  если бедут передан url то будет создана нотификация с HTML контентом иначе
- *                                            будет использован обычный режим c icon & title & content
+ * @param {Object}   options                  if url passed -> HTML page mode else icon & title & content mode
  * @param {String}   [options.url]
  * @param {String}   [options.icon]
  * @param {String}   [options.title]
  * @param {String}   [options.content]
- * @param {String}   [options.replaceId]      действует как window.name в функции window.open
+ * @param {String}   [options.replaceId]      acts as window.name in window.open
  * @param {Function} [options.onclick]
  * @param {Function} [options.onclose]
  * @param {Function} [options.ondisplay]
  * @param {Function} [options.onerror]
- * @param {Boolean}  [options.autoclose=true] Закрыть при клике на блок? Крестик закрытия очень мал и его сложно поймать
- *                                            поэтому автозакрытие по умолчанию
- * @param {Number}   [options.timeout=Infinity] Время после которого нотификация скроется автоматически
+ * @param {Boolean}  [options.autoclose=true] close block on click? close button is to small so its enable by default
+ * @param {Number}   [options.timeout=Infinity] notification auto-close timeout
  * @param {Function} [callback]
  *
  * @example
- *      // Acynchronous
+ *      // Acync
  *      var options = {
  *          icon: 'avatar.png',
  *          title: 'Title',
@@ -58,22 +57,22 @@ var Notification = function (options, callback) {
     callback = callback || $.noop;
     var self = this;
 
-    // Нотификация доступна
+    // is supported
     if (!window.webkitNotifications) {
         return callback(false);
     }
 
-    // Запрашиваем доступ
+    // ask for permission
     // 1 undefined
     // 2 forbidden
     // 0 allowed
     this.notificationStatus = window.webkitNotifications.checkPermission();
-    this.monitorPermission(function (isNotificationsAllowed) {
-        if (!isNotificationsAllowed) { // Пользователь запретил
+    this.requestPermission(function (isNotificationsAllowed) {
+        if (!isNotificationsAllowed) { // forbidden
             return callback(isNotificationsAllowed);
         }
 
-        // Пользователь разрешил
+        // allowed
         self.instance = options.url ?
                         self.create(options.url) :
                         self.create(options.icon, options.title, options.content);
@@ -116,7 +115,7 @@ Notification.prototype = {
     instance: null,
 
     /**
-     * Показывает блок
+     * displays notification
      */
     show: function () {
         var self = this;
@@ -135,7 +134,7 @@ Notification.prototype = {
     },
 
     /**
-     * Скрывает блок
+     * hides notification
      */
     cancel: function () {
         if (this.instance) {
@@ -146,15 +145,14 @@ Notification.prototype = {
     },
 
     /**
-     * Создает инстанс объекта нотификации и биндит на него события
+     * Creates instance
      *
      * @param {String} page_url_or_icon
      * @param {String} [title]
      * @param {String} [content]
      */
     create: function (page_url_or_icon, title, content) {
-        var instance,
-            self = this;
+        var instance;
 
         // create instance
         if (arguments.length === 1) {
@@ -167,16 +165,16 @@ Notification.prototype = {
     },
 
     /**
-     * Проверяет можно ли показывать нотификацию
+     * Acync wrapper over window.webkitNotifications.requestPermission()
      *
      * @param {Function} callback(isNotificationsAllowed)
      */
-    monitorPermission: function(callback) {
+    requestPermission: function(callback) {
         var self = this;
 
-        if (this.notificationStatus === 1) { // Пользователь еще не выбрал, либо мы не показали запрос
-            Notification.queue.push(callback); // Добавляем в очередь
-            if (Notification.isAccessRequested) { // Если уже один раз запросили, то выходим запросы уже в очереди
+        if (this.notificationStatus === 1) { // User deciding or not requested
+            Notification.queue.push(callback); // add callback to queue
+            if (Notification.isAccessRequested) { // already requested
                 return;
             }
         } else { // пользователь уже решил
@@ -186,6 +184,7 @@ Notification.prototype = {
 
         Notification.isAccessRequested = true;
 
+        // requestPermission() must be called in user event listener!
         $(document).one('click', function () {
             window.webkitNotifications.requestPermission();
         });
@@ -193,10 +192,10 @@ Notification.prototype = {
         var checkPermissionInterval = window.setInterval(function () {
             self.notificationStatus = window.webkitNotifications.checkPermission();
             if (self.notificationStatus === 1) {
-                return; // Пользователь еще не решил
+                return; // still not decided
             }
             window.clearInterval(checkPermissionInterval);
-            Notification.callQueue(self.notificationStatus === 0); // 2 запрещено, 0 разрешено
+            Notification.callQueue(self.notificationStatus === 0); // 2 forbidden, 0 allowed
         }, 200);
     }
 };
