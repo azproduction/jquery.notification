@@ -5,7 +5,7 @@ Usage
 -----
 
 ```javascript
-// Acynchronous usage. icon + text + title mode
+// Asynchronous usage. icon + text + title mode
 var options = {
     icon: 'avatar.png',
     title: 'Title',
