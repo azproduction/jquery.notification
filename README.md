@@ -1,6 +1,15 @@
 Webkit Notification API jQuery Wrapper
 ======================================
 
+  - It requests permission when it required (do not distrubs user on the start) you just call `$.notification` and this plugin will do the rest for you.
+  - It abstracts 2 type of notifications (createHTMLNotification, createNotification) in one simple interface.
+  - It allows you to specify auto-hide notification inteval (`timeout` parameter). 
+  - It closes notification on click by default (`autoclose` parameter). Default browser action: user must click small close button on the top right corner to do that. 
+  - You also can specify `replaceId` parameter to replace existed notification with new one (prevents from notifications flooding when showing chat messages in notifications, for eaxmple).
+  - You can pass `onclick`, `onclose`, `ondisplay`, `onerror` to watch Notification's events.
+
+This plug-in now works in Yandex.Mail WebChat (in production) and it does not have a strong dependence on jQuery.
+
 Usage
 -----
 
