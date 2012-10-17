@@ -9,6 +9,7 @@
         <div>Chrome and Safari</div>
         <button class="b-html">HTML Notification</button>
         <button class="b-icon">Icon Notification</button>
+        <button class="b-icon-one">Only one Icon Notification</button>
 
         <script type="text/javascript">
             $('.b-html').click(function () {
@@ -37,6 +38,21 @@
                         notification.show();
                     }
                 });
+            });
+
+            $('.b-icon-one').click(function () {
+                var options = {
+                    icon: '//github.com/favicon.ico',
+                    title: 'Only one!',
+                    replaceId: 'notificationReplaceId',
+                    content: Math.random(),
+                    timeout: 5000, // close notification in 5 sec
+                    onclick: function () {
+                        console.log('Pewpew');
+                    }
+                };
+
+                $.notification(options).show();
             });
         </script>
     </body>
