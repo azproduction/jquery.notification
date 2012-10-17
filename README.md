@@ -23,7 +23,8 @@ var options = {
         console.log('Pewpew');
     }
 };
-var notification = $.notification(options, function (isNotificationsAllowed) {
+
+$.notification(options, function (isNotificationsAllowed, notification) {
     if (isNotificationsAllowed) {
         notification.show();
     }

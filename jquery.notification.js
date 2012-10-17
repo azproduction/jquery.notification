@@ -53,13 +53,13 @@ var Notification = function (options, callback) {
         return new Notification(options, callback);
     }
     options = options || {};
-    options.autoclose = options.autoclose || true;
+    options.autoclose = typeof options.autoclose === "undefined" ? true : options.autoclose;
     callback = callback || $.noop;
     var self = this;
 
     // is supported
     if (!window.webkitNotifications) {
-        return callback(false);
+        return callback(false, self);
     }
 
     // ask for permission
@@ -69,7 +69,7 @@ var Notification = function (options, callback) {
     this.notificationStatus = window.webkitNotifications.checkPermission();
     this.requestPermission(function (isNotificationsAllowed) {
         if (!isNotificationsAllowed) { // forbidden
-            return callback(isNotificationsAllowed);
+            return callback(isNotificationsAllowed, self);
         }
 
         // allowed
@@ -93,7 +93,7 @@ var Notification = function (options, callback) {
         if (self.isShowCalled) {
             self.show();
         }
-        callback(isNotificationsAllowed);
+        callback(isNotificationsAllowed, self);
     });
 };
 
@@ -184,19 +184,23 @@ Notification.prototype = {
 
         Notification.isAccessRequested = true;
 
-        // requestPermission() must be called in user event listener!
-        $(document).one('click', function () {
-            window.webkitNotifications.requestPermission();
-        });
-
-        var checkPermissionInterval = window.setInterval(function () {
+        var checkPermission = function () {
             self.notificationStatus = window.webkitNotifications.checkPermission();
             if (self.notificationStatus === 1) {
                 return; // still not decided
             }
             window.clearInterval(checkPermissionInterval);
             Notification.callQueue(self.notificationStatus === 0); // 2 forbidden, 0 allowed
-        }, 200);
+        };
+
+        // requestPermission() must be called in user event listener!
+        $(document).one('click', function () {
+            window.webkitNotifications.requestPermission(checkPermission);
+        });
+
+        if (!window.webkitNotifications.requestPermission.length) {
+            var checkPermissionInterval = window.setInterval(checkPermission, 200);
+        }
     }
 };
 
