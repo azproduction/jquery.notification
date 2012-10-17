@@ -156,7 +156,11 @@ Notification.prototype = {
 
         // create instance
         if (arguments.length === 1) {
-            instance = window.webkitNotifications.createHTMLNotification(page_url_or_icon);
+            if (window.webkitNotifications.createHTMLNotification) {
+                instance = window.webkitNotifications.createHTMLNotification(page_url_or_icon);
+            } else {
+                instance = window.webkitNotifications.createNotification('', '', page_url_or_icon);
+            }
         } else {
             instance = window.webkitNotifications.createNotification(page_url_or_icon, title, content);
         }
