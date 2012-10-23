@@ -7,53 +7,57 @@
     </head>
     <body>
         <div>Chrome and Safari</div>
-        <button class="b-html">HTML Notification</button>
+        <div class="b-level"></div>
         <button class="b-icon">Icon Notification</button>
         <button class="b-icon-one">Only one Icon Notification</button>
+        <button class="b-string">Just String</button>
+        <button class="b-deferred">jQuery Notification is Deferred</button>
 
         <script type="text/javascript">
-            $('.b-html').click(function () {
-                var options = {
-                    url: 'http://ya.ru',
-                    autoclose: false,
-                    onclick: function () {
-                        console.log('Pewpew');
-                    }
-                };
-                var notification = $.notification(options).show();
-            });
-
             $('.b-icon').click(function () {
                 var options = {
-                    icon: '//github.com/favicon.ico',
-                    title: 'Title',
-                    content: 'Message. Auto close in 5 sec... Or close on click',
-                    timeout: 5000, // close notification in 5 sec
+                    iconUrl: '//github.com/favicon.ico',
+                    title: 'Quick One!',
+                    body: 'Message. Auto close in 1 sec... Or close on click',
+                    timeout: 1000, // close notification in 1 sec
                     onclick: function () {
                         console.log('Pewpew');
                     }
                 };
-                var notification = $.notification(options, function (isNotificationsAllowed, notification) {
-                    if (isNotificationsAllowed) {
-                        notification.show();
-                    }
-                });
+                var notification = $.notification(options);
             });
 
             $('.b-icon-one').click(function () {
                 var options = {
-                    icon: '//github.com/favicon.ico',
+                    iconUrl: '//github.com/favicon.ico',
                     title: 'Only one!',
-                    replaceId: 'notificationReplaceId',
-                    content: Math.random(),
-                    timeout: 5000, // close notification in 5 sec
+                    tag: 'notificationReplaceId',
+                    body: Math.random(),
                     onclick: function () {
                         console.log('Pewpew');
                     }
                 };
 
-                $.notification(options).show();
+                $.notification(options);
             });
+
+            $('.b-string').click(function () {
+                $.notification("Hello from jQuery.notifications!");
+            });
+
+            $('.b-deferred').click(function () {
+                $.notification("Hello from jQuery.notifications!")
+                .then(function (notification) {
+                    console.log('Ok!');
+                    setTimeout(function () {
+                        notification.cancel();
+                    }, 2000);
+                }, function (error) {
+                    console.error('Rejected with status ' + error);
+                });
+            });
+
+            $('.b-level').text('Notifications are ' + $.notification.permissionLevel());
         </script>
     </body>
 </html>
