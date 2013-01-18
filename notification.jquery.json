@@ -1,26 +1,35 @@
 {
     "name": "notification",
     "title": "Webkit Notification API jQuery Wrapper",
+    "description": "Webkit Notification plugin. That makes your life easear.",
     "keywords": [
         "notification",
         "notification_api",
         "wrapper",
         "webkit"
     ],
-    "version": "0.0.1",
+    "version": "1.0.1",
     "author": {
         "name": "Mikhail Davydov",
+        "email": "azazel.private@gmail.com",
         "url": "http://azproduction.ru/"
     },
-    "licenses": [{
-        "type": "MIT",
-        "url": "https://raw.github.com/azproduction/jquery.notification/master/LICENCE"
-    }],
+    "maintainers": [
+        {
+            "name": "Mikhail Davydov",
+            "email": "azazel.private@gmail.com",
+            "url": "http://azproduction.ru/"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://opensource.org/licenses/MIT"
+        }
+    ],
     "bugs": "https://github.com/azproduction/jquery.notification/issues",
     "homepage": "https://github.com/azproduction/jquery.notification",
     "demo": "http://azproduction.ru/jquery.notification/",
-    "docs": "https://github.com/azproduction/jquery.notification",
-    "download": "https://raw.github.com/azproduction/jquery.notification/master/jquery.notification.js",
     "dependencies": {
         "jquery": ">=1.5"
     }
