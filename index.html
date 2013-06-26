@@ -50,7 +50,7 @@
                 .then(function (notification) {
                     console.log('Ok!');
                     setTimeout(function () {
-                        notification.cancel();
+                        notification.close();
                     }, 2000);
                 }, function (error) {
                     console.error('Rejected with status ' + error);

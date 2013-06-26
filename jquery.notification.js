@@ -15,14 +15,15 @@ jQuery.notification = (function ($, window) {
  * @type {Function}
  */
 var W3CNotification = (function () {
-    // Safari 6+
-    if (window.Notification && window.Notification.permissionLevel) return window.Notification;
+    // Safari 6+ Firefox 22+
+    if (window.Notification && window.Notification.permissionLevel || window.Notification.permission) return window.Notification;
 
     var webkitNotifications = window.webkitNotifications;
 
     // Non Webkit browsers
     if (!webkitNotifications) return (function () {
         var mockWebkitNotifications = {};
+        mockWebkitNotifications.permission = "unsupported";
         mockWebkitNotifications.permissionLevel = function () {
             return "unsupported";
         };
@@ -55,7 +56,9 @@ var W3CNotification = (function () {
         instance.onshow = options.onshow || $.noop;
         instance.onerror = options.onerror || $.noop;
         instance.onclose = options.onclose || $.noop;
-
+        instance.close = function () {
+            instance.cancel();
+        };
 
         if (Notification.permissionLevel() === "granted") {
             instance.show();
@@ -145,6 +148,12 @@ var exports = function (options) {
     options.autoclose = typeof options.autoclose === "undefined" ? true : options.autoclose;
     options.timeout = options.timeout || Infinity;
 
+    // fix older iconUrl
+    var icon = options.iconUrl || options.icon;
+    if (icon) {
+        options.icon = icon;
+    }
+
     W3CNotification.requestPermission(function () {
         if ((W3CNotification.permission || W3CNotification.permissionLevel()) !== "granted") {
             dfd.reject(W3CNotification.permissionLevel());
@@ -156,14 +165,14 @@ var exports = function (options) {
         if (isFinite(options.timeout)) {
             instance.addEventListener('show', function () {
                 setTimeout(function () {
-                    instance.cancel();
+                    instance.close();
                 }, options.timeout);
             }, false);
         }
 
         if (options.autoclose) {
             instance.addEventListener('click', function () {
-                instance.cancel();
+                instance.close();
             }, false)
         }
 
@@ -173,7 +182,10 @@ var exports = function (options) {
     return dfd.promise();
 };
 
-exports.permissionLevel = W3CNotification.permissionLevel;
+exports.permission = W3CNotification.permission;
+exports.permissionLevel = W3CNotification.permissionLevel || function () {
+    return W3CNotification.permission;
+};
 exports.requestPermission = W3CNotification.requestPermission;
 
 return exports;

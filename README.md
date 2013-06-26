@@ -39,7 +39,7 @@ $.notification("Message");
 $.notification("Hello from jQuery.notifications!")
 .then(function (notification) {
     setTimeout(function () {
-        notification.cancel();
+        notification.close();
     }, 2000);
 }, function () {
     console.error('Rejected!');
