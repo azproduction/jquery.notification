@@ -16,7 +16,7 @@ jQuery.notification = (function ($, window) {
  */
 var W3CNotification = (function () {
     // Safari 6+ Firefox 22+
-    if (window.Notification && window.Notification.permissionLevel || window.Notification.permission) return window.Notification;
+    if (window.Notification && (window.Notification.permissionLevel || window.Notification.permission)) return window.Notification;
 
     var webkitNotifications = window.webkitNotifications;
 
