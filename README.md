@@ -24,13 +24,13 @@ var options = {
 };
 
 $.notification(options);
-// notification will displayed as soon as user permit notifications
+// notification will be displayed as soon as user permit notifications
 ```
 
 ```javascript
 // just text
 $.notification("Message");
-// notification will displayed as soon as user permit notifications
+// notification will be displayed as soon as user permit notifications
 ```
 
 ```javascript
