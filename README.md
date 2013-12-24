@@ -11,9 +11,8 @@ This plug-in now works in Yandex.Mail WebChat (in production) and it does not ha
 
 ## CDN
 
-[//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.js](//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.js)
-
-[//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.min.js](//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.min.js)
+* cdnjs [1.0.2/jquery.notification.js](//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.js),
+[1.0.2/jquery.notification.min.js](//cdnjs.cloudflare.com/ajax/libs/jquery.notification/1.0.2/jquery.notification.min.js)
 
 ## Usage
 
