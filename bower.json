@@ -1,0 +1,14 @@
+{
+    "name": "jquery.notification",
+    "version": "1.0.4",
+    "main": "jquery.notification.js",
+    "description": "Webkit Notification API jQuery Wrapper.",
+    "license": "MIT",
+    "ignore": [
+        ".gitignore",
+        "index.html",
+        "notification.jquery.json",
+        "LICENCE",
+        "README.md"
+    ]
+}
