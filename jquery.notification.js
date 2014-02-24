@@ -80,31 +80,39 @@ var W3CNotification = (function () {
             return;
         }
 
+        if (webkitNotifications.requestPermission.length) {
+            webkitNotifications.requestPermission(function () {
+                Notification.permissionLevel();
+                callback();
+            });
+            return;
+        }
 
-        $(document).one('click', function () {
-            if (webkitNotifications.requestPermission.length) {
-                webkitNotifications.requestPermission(function () {
-                    Notification.permissionLevel();
-                    callback();
-                });
-                return;
+        // In old chrome webkitNotifications.requestPermission is without callback LOL
+        webkitNotifications.requestPermission();
+        var checkPermissionInterval = window.setInterval(function () {
+            var permissionLevel = Notification.permissionLevel();
+
+            if (permissionLevel !== "default") {
+                window.clearInterval(checkPermissionInterval);
+                callback();
             }
-
-            // In old chrome webkitNotifications.requestPermission is without callback LOL
-            webkitNotifications.requestPermission();
-            var checkPermissionInterval = window.setInterval(function () {
-                var permissionLevel = Notification.permissionLevel();
-
-                if (permissionLevel !== "default") {
-                    window.clearInterval(checkPermissionInterval);
-                    callback();
-                }
-            }, 200);
-        });
+        }, 200);
     };
 
     return Notification;
 }());
+
+var requestPermission = function (callback) {
+    if ((W3CNotification.permission || W3CNotification.permissionLevel()) !== "default") {
+        callback();
+        return;
+    }
+
+    $(document).one('click', function () {
+        W3CNotification.requestPermission(callback);
+    });
+};
 
 /**
  * Notification
@@ -154,9 +162,10 @@ var exports = function (options) {
         options.icon = icon;
     }
 
-    W3CNotification.requestPermission(function () {
-        if ((W3CNotification.permission || W3CNotification.permissionLevel()) !== "granted") {
-            dfd.reject(W3CNotification.permissionLevel());
+    requestPermission(function () {
+        var level = W3CNotification.permission || W3CNotification.permissionLevel();
+        if (level !== "granted") {
+            dfd.reject(level);
             return;
         }
 
@@ -186,7 +195,7 @@ exports.permission = W3CNotification.permission;
 exports.permissionLevel = W3CNotification.permissionLevel || function () {
     return W3CNotification.permission;
 };
-exports.requestPermission = W3CNotification.requestPermission;
+exports.requestPermission = requestPermission;
 
 return exports;
 
