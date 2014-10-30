@@ -51,6 +51,8 @@ $.notification("Hello from jQuery.notifications!")
 });
 ```
 
+[Live example](http://jsfiddle.net/tgjb6hh8/)
+
 ## Note
 
 Before the notification will occur the ***user must click on the page*** and allow the notifications.
